@@ -2,30 +2,25 @@
 const Generator = require('yeoman-generator')
 const chalk = require('chalk')
 const yosay = require('yosay')
+const prompts = require('./prompts')
 
 module.exports = class extends Generator {
   prompting () {
     // Have Yeoman greet the user.
     this.log(yosay(`Welcome to the outstanding ${chalk.red('generator-goqoo')} generator!`))
 
-    const prompts = [
-      {
-        type: 'confirm',
-        name: 'someAnswer',
-        message: 'Would you like to enable this option?',
-        default: true,
-      },
-    ]
-
     return this.prompt(prompts).then(props => {
       // To access props later use this.props.someAnswer;
       this.props = props
     })
   }
-
-  writing () {
-    this.fs.copy(this.templatePath('dummyfile.txt'), this.destinationPath('dummyfile.txt'))
+  configuring () {
+    this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), {
+      projectName: this.props.projectName,
+    })
   }
+
+  writing () {}
 
   install () {
     this.installDependencies({
