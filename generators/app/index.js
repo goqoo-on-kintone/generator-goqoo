@@ -20,7 +20,9 @@ module.exports = class extends Generator {
     })
   }
 
-  writing () {}
+  writing () {
+    this.fs.copy(this.templatePath('.eslintrc.yml'), this.destinationPath('.eslintrc.yml'))
+  }
 
   install () {
     this.installDependencies({
