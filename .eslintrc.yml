@@ -3,6 +3,7 @@ plugins:
   - node
   - mocha
 env:
+  jest: true
   mocha: true
 # テスト用のグローバル変数 # TODO: 自動的にglobalを認識させたい
 globals:
