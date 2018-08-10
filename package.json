@@ -3,11 +3,6 @@
   "version": "0.0.0",
   "description": "",
   "homepage": "",
-  "author": {
-    "name": "Hisaki Akaza",
-    "email": "4494300+TheRed@users.noreply.github.com",
-    "url": ""
-  },
   "files": [
     "generators"
   ],
