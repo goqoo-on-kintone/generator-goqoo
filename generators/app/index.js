@@ -21,7 +21,10 @@ module.exports = class extends Generator {
   }
 
   writing () {
-    this.fs.copy(this.templatePath('.eslintrc.yml'), this.destinationPath('.eslintrc.yml'))
+    // Copy all static files
+    this.fs.copy(this.templatePath('static/**/*'), this.destinationRoot())
+    this.fs.copy(this.templatePath('static/**/.*'), this.destinationRoot())
+    this.fs.copy(this.templatePath('static/.*/**/*'), this.destinationRoot())
   }
 
   install () {
