@@ -6,7 +6,7 @@ const [subCommand, ...args] = process.argv.slice(2)
 let subGenerator
 
 switch (subCommand) {
-  case 'new':
+  case 'init':
     subGenerator = 'app'
     break
   case 'generate':
