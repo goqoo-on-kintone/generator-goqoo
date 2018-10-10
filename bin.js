@@ -10,7 +10,8 @@ switch (subCommand) {
     subGenerator = 'app'
     break
   case 'generate':
-    subGenerator = args.shift()
+  case 'g':
+    subGenerator = `g-${args.shift()}`
     break
   default:
     process.exit(1)
