@@ -14,6 +14,7 @@ switch (subCommand) {
     subGenerator = `g-${args.shift()}`
     break
   default:
+    console.error(`goqoo: Unknown command '${subCommand}'`)
     process.exit(1)
 }
 
