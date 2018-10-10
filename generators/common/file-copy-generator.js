@@ -1,15 +1,9 @@
 'use strict'
 const Generator = require('yeoman-generator')
 const fs = require('fs')
-const chalk = require('chalk')
 const yaml = require('js-yaml')
+const { message } = require('./util')
 
-const padding = str => ('         ' + str).substr(-9) + ' '
-const coloredMessage = (color, fileStatus, relativePath) => chalk[color](padding(fileStatus)) + relativePath
-const message = {
-  error: m => coloredMessage('red', 'Error', m),
-  force: m => coloredMessage('yellow', 'force', m),
-}
 module.exports = class extends Generator {
   configuring() {
     this.appName = this.args[0]
