@@ -1,5 +1,6 @@
 # Goqoo
 dist/
+tmp/
 
 # Logs
 logs

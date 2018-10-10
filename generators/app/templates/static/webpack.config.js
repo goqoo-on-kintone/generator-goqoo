@@ -75,10 +75,6 @@ module.exports = {
         test: /\.scss$/,
         loader: ['style-loader/useable', 'css-loader', 'sass-loader'],
       },
-      {
-        test: path.join(__dirname, 'node_modules/kintone-utility/docs/kintoneUtility'),
-        loader: 'exports-loader?kintoneUtility',
-      },
     ],
   },
   resolve: {
