@@ -11,12 +11,6 @@ module.exports = class extends FileCopyGenerator {
 
     // Create JS source code
     const appName = this.appName
-    ;['', '-index', '-detail', '-submit'].forEach(eventHandler =>
-      this.fs.copyTpl(
-        this.templatePath(`scaffold${eventHandler}.js`),
-        this.destinationPath(`apps/${appName}/${appName}${eventHandler}.js`),
-        { appName }
-      )
-    )
+    this.fs.copyTpl(this.templatePath(`model.js`), this.destinationPath(`apps/${appName}/${appName}.js`), { appName })
   }
 }
