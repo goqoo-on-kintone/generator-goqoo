@@ -1,4 +1,7 @@
-extends: standard
+extends:
+  - standard
+  - prettier
+  - prettier/standard
 plugins:
   - node
   - mocha
@@ -10,9 +13,6 @@ globals:
   assert: true
   goqoo: true
 rules:
-  comma-dangle:
-    - error
-    - only-multiline
   no-debugger: off
   no-var: error
   prefer-const: error

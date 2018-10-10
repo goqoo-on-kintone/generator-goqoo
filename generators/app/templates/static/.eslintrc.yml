@@ -16,8 +16,8 @@ rules:
   no-console:
     - error
     - allow:
-      - warn
-      - error
+        - warn
+        - error
   # デバッガ有効 # TODO: エディタではautofixせず、コミットはNGにしたいが可能だろうか？
   no-debugger: off
   # 全角スペースはエラー（テンプレート文字列では認める）
@@ -30,3 +30,5 @@ rules:
   no-var: error
   # 原則letよりconstを使う
   prefer-const: error
+  # importだけでなくrequireの無効パスもエラー
+  node/no-missing-require: error
