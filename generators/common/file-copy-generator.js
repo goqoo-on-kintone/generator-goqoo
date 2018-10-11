@@ -17,6 +17,7 @@ module.exports = class extends Generator {
     if (Object.values(config.apps).includes(appName)) {
       // TODO: Appという表記をどうするか・・
       this.log.error(`App '${appName}' already exists!`)
+      // TODO: this.env.on('error')でリスナー登録したいんだけど出来ない。。。
       this.env.error()
     }
     config.apps.push(appName)
