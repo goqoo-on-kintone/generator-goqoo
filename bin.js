@@ -19,4 +19,4 @@ switch (subCommand) {
 }
 
 const yeoman = spawnSync('yo', [`goqoo:${subGenerator}`, ...args], { stdio: 'inherit' })
-process.exit(yeoman.code)
+process.exit(yeoman.status)
