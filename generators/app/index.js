@@ -1,11 +1,11 @@
 'use strict'
-const Generator = require('yeoman-generator')
+const Generator = require('../common/generator')
 const chalk = require('chalk')
 const yosay = require('yosay')
 const prompts = require('./prompts')
 
 module.exports = class extends Generator {
-  prompting () {
+  prompting() {
     // Have Yeoman greet the user.
     this.log(yosay(`Welcome to the outstanding ${chalk.red('generator-goqoo')} generator!`))
 
@@ -14,20 +14,27 @@ module.exports = class extends Generator {
       this.props = props
     })
   }
-  configuring () {
+
+  configuring() {
+    this.log.run(`git init`)
+    const gitInit = this.spawnCommandSync('git', ['init'])
+    if (gitInit.status !== 0) {
+      this.env.error(`git process exited with code ${gitInit.status}`)
+    }
+
     this.fs.copyTpl(this.templatePath('package.json'), this.destinationPath('package.json'), {
       projectName: this.props.projectName,
     })
   }
 
-  writing () {
+  writing() {
     // Copy all static files
     this.fs.copy(this.templatePath('static/**/*'), this.destinationRoot())
     this.fs.copy(this.templatePath('static/**/.*'), this.destinationRoot())
     this.fs.copy(this.templatePath('static/.*/**/*'), this.destinationRoot())
   }
 
-  install () {
+  install() {
     this.installDependencies({
       npm: true,
       bower: false,

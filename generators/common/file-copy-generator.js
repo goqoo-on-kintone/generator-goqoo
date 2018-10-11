@@ -1,8 +1,7 @@
 'use strict'
-const Generator = require('yeoman-generator')
+const Generator = require('./generator')
 const fs = require('fs')
 const yaml = require('js-yaml')
-const { message } = require('./util')
 
 module.exports = class extends Generator {
   configuring() {
@@ -17,12 +16,12 @@ module.exports = class extends Generator {
     const config = yaml.safeLoad(this.fs.read(this.destinationPath(configRelativePath)))
     if (Object.values(config.apps).includes(appName)) {
       // TODO: Appという表記をどうするか・・
-      this.log(message.error(`App '${appName}' already exists!`))
-      process.exit(1)
+      this.log.error(`App '${appName}' already exists!`)
+      this.env.error()
     }
     config.apps.push(appName)
     const configStr = yaml.safeDump(config)
     fs.writeFileSync(this.destinationPath(configRelativePath), configStr)
-    this.log(message.force(configRelativePath))
+    this.log.force(configRelativePath)
   }
 }
