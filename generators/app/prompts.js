@@ -1,11 +1,11 @@
 'use strict'
-const utils = require('../../utils/all')
+const utils = require('../common/utils')
 
 module.exports = [
   {
     type: 'input',
     name: 'projectName',
     message: 'Please choose your project name',
-    default: utils.yeoman.getAppName(),
+    default: utils.getAppName(),
   },
 ]
