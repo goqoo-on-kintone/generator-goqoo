@@ -29,9 +29,9 @@ module.exports = class extends Generator {
 
   writing() {
     // Copy all static files
-    this.fs.copy(this.templatePath('static/**/*'), this.destinationRoot())
-    this.fs.copy(this.templatePath('static/**/.*'), this.destinationRoot())
-    this.fs.copy(this.templatePath('static/.*/**/*'), this.destinationRoot())
+    this.fs.copy(this.templatePath('static'), this.destinationRoot(), {
+      globOptions: { dot: true },
+    })
   }
 
   install() {
