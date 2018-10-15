@@ -1,5 +1,5 @@
 # generator-goqoo [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
-> 
+>
 
 ## Installation
 
@@ -25,7 +25,7 @@ yo goqoo
 
 ## License
 
-MIT © [Hisaki Akaza]()
+Licensed under the MIT license.
 
 
 [npm-image]: https://badge.fury.io/js/generator-goqoo.svg
