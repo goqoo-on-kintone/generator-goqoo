@@ -90,7 +90,7 @@ const config = {
     inline: true,
     // hot: true,
     https: true,
-    port: 8888,
+    port: 59000,
     headers: { 'Access-Control-Allow-Origin': '*' },
     progress: true,
   },
