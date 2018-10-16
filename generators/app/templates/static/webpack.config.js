@@ -53,14 +53,14 @@ module.exports = {
         query: {
           presets: [
             [
-              'env',
+              '@babel/preset-env',
               {
                 targets: { browsers: ['last 2 versions'] },
                 modules: false,
               },
             ],
           ],
-          plugins: ['transform-class-properties'],
+          plugins: [['@babel/proposal-class-properties', { loose: false }]],
         },
       },
       {
