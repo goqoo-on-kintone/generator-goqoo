@@ -1,15 +1,18 @@
 const config = require('../.goqoo/webpack.config.base')
 
-// Add Loaders
+// Edit the "config" object as you like.
+// Do not edit ".goqoo/webpack.config.base"
+
+// ex. Add Loaders
 // config.module.rules.push({
 //   test: /\.ext$/,
 //   loader: ['foo-loader', 'bar-loader'],
 // })
 
-// Add Plugins
+// ex. Add Plugins
 // config.plugins.push(new foobarPlugin())
 
-// Change webpack-dev-server Settings
+// ex. Change webpack-dev-server Settings
 // config.devServer.hot = true
 
 // And more!
