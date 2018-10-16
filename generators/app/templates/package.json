@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "webpack --progress --mode development",
-    "watch": "webpack --progress --mode development --watch",
-    "release": "webpack --progress --mode production",
+    "start": "webpack-dev-server --config config/webpack.config.goqoo.js --mode development",
+    "s": "npm start",
+    "webpack": "webpack --progress --config config/webpack.config.goqoo.js",
+    "build": "npm run webpack -- --mode development",
+    "watch": "npm run build -- --watch",
+    "release": "npm run webpack -- --mode production",
+    "build:s3": "cross-env S3=true npm run build",
+    "watch:s3": "cross-env S3=true npm run watch",
+    "release:s3": "cross-env S3=true npm run release",
     "prettier": "prettier --write webpack.config.js \"src/**/*.js\"",
     "eslint": "eslint --fix webpack.config.js \"src/**/*.js\"",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
