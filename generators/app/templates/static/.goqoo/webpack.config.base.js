@@ -2,15 +2,15 @@
 const webpack = require('webpack')
 const path = require('path')
 const rcfile = require('rc-config-loader')
-require('dotenv').config({ path: path.resolve('config/.env') })
-const DropboxKintone = require('./.goqoo/dropbox')
+require('dotenv').config({ path: path.resolve('config', '.env') })
+const DropboxKintone = require('./dropbox')
 const S3Plugin = require('webpack-s3-plugin')
 
 const { npm_package_name: projectName } = process.env
-const { apps, useDropbox } = rcfile('goqoo', { configFileName: `${__dirname}/config/goqoo.config` }).config
+const { apps, useDropbox } = rcfile('goqoo', { configFileName: path.resolve('config', 'goqoo.config') }).config
 
-const entry = apps.reduce((obj, file) => {
-  obj[file] = ['babel-polyfill', `${__dirname}/apps/${file}/${file}`]
+const entry = apps.reduce((obj, appName) => {
+  obj[appName] = ['babel-polyfill', path.resolve('apps', appName, appName)]
   return obj
 }, {})
 
@@ -35,7 +35,7 @@ if (useDropbox) {
       accessToken: dropbox.token,
       localRootDir: dropbox.rootDir,
     })
-    const dbxOutputPaths = apps.map(file => `/${outputDir}/${file}.js`)
+    const dbxOutputPaths = apps.map(appName => `/${outputDir}/${appName}.js`)
     dbxKintone.fetchSharedLinks(dbxOutputPaths).then(paths => {
       console.log(JSON.stringify(paths, null, '  '))
     })
@@ -86,12 +86,13 @@ const config = {
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {
-    contentBase: path.resolve(__dirname, './dist'),
+    contentBase: path.resolve('dist'),
     inline: true,
     // hot: true,
     https: true,
     port: 8888,
     headers: { 'Access-Control-Allow-Origin': '*' },
+    progress: true,
   },
 }
 
@@ -100,6 +101,12 @@ if (process.env.S3) {
     obj[`${key}-${process.env.AWS_RANDOM_SUFFIX}`] = value
     return obj
   }, {})
+  ;['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_S3_REGION', 'AWS_S3_BUCKET'].forEach(variable => {
+    if (!process.env[variable]) {
+      console.error(`${variable}: environment variable not found!`)
+      process.exit(1)
+    }
+  })
 
   config.plugins.push(
     new S3Plugin({
