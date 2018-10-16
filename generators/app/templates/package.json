@@ -20,6 +20,7 @@
     "@babel/preset-env": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
+    "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "dotenv": "^6.1.0",
     "dropbox": "^4.0.5",
@@ -44,7 +45,9 @@
     "sass-loader": "^7.0.1",
     "style-loader": "^0.23.1",
     "webpack": "^4.8.3",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9",
+    "webpack-s3-plugin": "^1.0.2"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
