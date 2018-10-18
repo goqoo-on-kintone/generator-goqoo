@@ -5,7 +5,7 @@ const yaml = require('js-yaml')
 
 module.exports = class extends Generator {
   configuring() {
-    this.appName = this.args[0]
+    ;[this.appName, this.appId] = this.args[0].split(':')
   }
 
   writing() {

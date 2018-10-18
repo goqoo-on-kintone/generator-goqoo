@@ -9,7 +9,7 @@ module.exports = class extends FileCopyGenerator {
   }
 
   kintone() {
-    const appId = secret.KINTONE_APPID
+    const appId = this.appId
     const api = new Kintone('the-red.cybozu.com', {
       authorization: {
         username: secret.KINTONE_USER,
