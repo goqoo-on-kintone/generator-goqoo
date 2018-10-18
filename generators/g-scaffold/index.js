@@ -66,6 +66,14 @@ module.exports = class extends FileCopyGenerator {
         this.fs.writeJSON(this.destinationPath(`apps/${this.appName}/fieldMap.json`), this.fieldMap)
       })
     })
+
+    // TODO: JSのURLも自動的にデプロイ
+    // api.preview.app.customize.get({ app: appId }, (err, response) => {
+    //   if (err) {
+    //     this.log.error(err)
+    //   }
+    //   this.log(response)
+    // })
   }
 
   writing() {
