@@ -23,9 +23,10 @@ module.exports = class extends FileCopyGenerator {
         this.log.error(err)
       }
       const { properties } = response
-      this.fieldMap = properties.reduce((obj, prop) => {
+      this.fieldMap = properties.reduce((obj, prop, index) => {
         // 特定のタイプのフィールドを全てカスタマイズビューに表示
         if (
+          index < 8 &&
           [
             'SINGLE_LINE_TEXT',
             'NUMBER',
