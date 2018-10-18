@@ -20,7 +20,6 @@ ln -f ${APP_TEMPLATE_STATIC_DIR}/.goqoo/dropbox.js ${HARDLINKS_DIR}/.goqoo
 
 ln -f ${APP_TEMPLATE_STATIC_DIR}/config/sample.env ${HARDLINKS_DIR}/config
 ln -f ${APP_TEMPLATE_STATIC_DIR}/config/webpack.config.goqoo.js ${HARDLINKS_DIR}/config
-cp ${APP_TEMPLATE_STATIC_DIR}/config/.env ${HARDLINKS_DIR}/config
 
 GOQOO_CONFIG="${HARDLINKS_DIR}/config/goqoo.config.yml"
 echo "apps:" > ${GOQOO_CONFIG}
