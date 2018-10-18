@@ -64,17 +64,25 @@ module.exports = class extends FileCopyGenerator {
           this.log.error(err)
         }
 
+        this.log.ok('Put views to kintone')
         this.fs.writeJSON(this.destinationPath(`apps/${this.appName}/fieldMap.json`), this.fieldMap)
+
+        // TODO: JSのURLも自動的にデプロイ
+        // api.preview.app.customize.get({ app: appId }, (err, response) => {
+        //   if (err) {
+        //     this.log.error(err)
+        //   }
+        this.log.ok('Put JavaScript URL to kintone')
+        // })
+
+        api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
+          if (err) {
+            this.log.error(err)
+          }
+          this.log.ok('Deploy to kintone')
+        })
       })
     })
-
-    // TODO: JSのURLも自動的にデプロイ
-    // api.preview.app.customize.get({ app: appId }, (err, response) => {
-    //   if (err) {
-    //     this.log.error(err)
-    //   }
-    //   this.log(response)
-    // })
   }
 
   writing() {
