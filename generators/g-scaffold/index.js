@@ -59,7 +59,7 @@ module.exports = class extends FileCopyGenerator {
         html: '<div id="customize-view"></div>',
         pager: true,
       }
-      api.preview.app.views.put({ app: 83, views }, (err, response) => {
+      api.preview.app.views.put({ app: appId, views }, (err, response) => {
         if (err) {
           this.log.error(err)
         }
