@@ -6,7 +6,7 @@
 
 // Foundationフレームワーク
 // 使用するスタイルのみをincludeで有効化
-@import "~foundation-sites/scss/foundation";
+@import '~foundation-sites/scss/foundation';
 
 // グリッドだけはdivタグの外で有効化
 @include foundation-xy-grid-classes;
@@ -17,4 +17,34 @@
   @include foundation-button;
   @include foundation-forms;
   @include foundation-table;
+
+  // レコード一覧
+  table {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  table thead th,
+  table thead td,
+  table tbody th,
+  table tbody td,
+  table tfoot th,
+  table tfoot td {
+    padding: 0.15rem 0.2rem 0.2rem;
+    border: 1px solid #f1f1f1;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  table input[type] {
+    height: 1.625rem; // 26px相当
+    margin: 0;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .number {
+    text-align: right;
+  }
 }
