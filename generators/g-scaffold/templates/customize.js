@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import swal from 'sweetalert2'
 import HTML_TEMPLATE from './customize.html'
 import style from './customize.scss'
 import fieldMap from './fieldMap.json'
@@ -25,7 +26,7 @@ export default event => {
       methods: {
         dummyAlert(e) {
           const buttonName = e.target.innerHTML || e.target.value
-          window.alert(`「${buttonName}」ボタンはダミーです。`)
+          swal(`「${buttonName}」ボタンはダミーです。`)
         },
       },
     })

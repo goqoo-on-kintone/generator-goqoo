@@ -77,6 +77,10 @@ const config = {
         test: /\.scss$/,
         loader: ['style-loader/useable', 'css-loader', 'sass-loader'],
       },
+      {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        loader: 'url-loader',
+      },
     ],
   },
   resolve: {
