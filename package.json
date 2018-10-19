@@ -59,10 +59,10 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix"
+      "eslint"
     ],
     "*.json": [
-      "prettier --write"
+      "prettier"
     ]
   },
   "repository": "TheRed/generator-goqoo",
