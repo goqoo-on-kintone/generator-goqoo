@@ -12,8 +12,8 @@
     "build:s3": "cross-env S3=true npm run build",
     "watch:s3": "cross-env S3=true npm run watch",
     "release:s3": "cross-env S3=true npm run release",
-    "prettier": "prettier --write webpack.config.js \"src/**/*.js\"",
-    "eslint": "eslint --fix webpack.config.js \"src/**/*.js\"",
+    "prettier": "prettier --write \"apps/**/*.js\" \"config/**/*.js\"",
+    "eslint": "eslint --fix \"apps/**/*.js\" \"config/**/*.js\"",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
   },
   "keywords": [],
