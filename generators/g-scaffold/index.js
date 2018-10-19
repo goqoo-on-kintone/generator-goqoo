@@ -2,10 +2,17 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
 const secret = require('./secret/secret')
+const prompts = require('./prompts')
 
 module.exports = class extends FileCopyGenerator {
   configuring() {
     super.configuring()
+  }
+
+  prompting() {
+    return this.prompt(prompts).then(_ => {
+      this.kintoneAccount = _
+    })
   }
 
   kintone() {
@@ -13,10 +20,10 @@ module.exports = class extends FileCopyGenerator {
     const appName = this.appName
     const port = secret.WEBPACK_PORT
 
-    const api = new Kintone('the-red.cybozu.com', {
+    const api = new Kintone(this.kintoneAccount.domain, {
       authorization: {
-        username: secret.KINTONE_USER,
-        password: secret.KINTONE_PASSWORD,
+        username: this.kintoneAccount.username,
+        password: this.kintoneAccount.password,
       },
     })
 
