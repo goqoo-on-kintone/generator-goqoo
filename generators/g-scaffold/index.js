@@ -10,6 +10,9 @@ module.exports = class extends FileCopyGenerator {
 
   kintone() {
     const appId = this.appId
+    const appName = this.appName
+    const port = secret.WEBPACK_PORT
+
     const api = new Kintone('the-red.cybozu.com', {
       authorization: {
         username: secret.KINTONE_USER,
@@ -65,22 +68,35 @@ module.exports = class extends FileCopyGenerator {
         }
 
         this.log.ok('Put views to kintone')
-        this.fs.writeJSON(this.destinationPath(`apps/${this.appName}/fieldMap.json`), this.fieldMap)
+        this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
 
-        // TODO: JSのURLも自動的にデプロイ
-        // api.preview.app.customize.get({ app: appId }, (err, response) => {
-        //   if (err) {
-        //     this.log.error(err)
-        //   }
-        this.log.ok('Put JavaScript URL to kintone')
-        // })
+        // JSのURLをデプロイ
+        api.preview.app.customize.put(
+          {
+            app: appId,
+            desktop: {
+              js: [
+                {
+                  type: 'URL',
+                  url: `https://localhost:${port}/${appName}.js`,
+                },
+              ],
+            },
+          },
+          (err, response) => {
+            if (err) {
+              this.log.error(err)
+            }
+            this.log.ok('Put JavaScript URL to kintone')
 
-        api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
-          if (err) {
-            this.log.error(err)
+            api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
+              if (err) {
+                this.log.error(err)
+              }
+              this.log.ok('Deploy to kintone')
+            })
           }
-          this.log.ok('Deploy to kintone')
-        })
+        )
       })
     })
   }
