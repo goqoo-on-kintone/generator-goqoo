@@ -32,6 +32,9 @@ mkdir -p ${APP_DIR}
 ln -f ${SCAFFOLD_TEMPLATE_DIR}/scaffold-detail.js ${APP_DIR}
 ln -f ${SCAFFOLD_TEMPLATE_DIR}/scaffold-index.js ${APP_DIR}
 ln -f ${SCAFFOLD_TEMPLATE_DIR}/scaffold-submit.js ${APP_DIR}
+ln -f ${SCAFFOLD_TEMPLATE_DIR}/customize.js ${APP_DIR}
+ln -f ${SCAFFOLD_TEMPLATE_DIR}/customize.html ${APP_DIR}
+ln -f ${SCAFFOLD_TEMPLATE_DIR}/customize.scss ${APP_DIR}
 sed -e 's/<%= appName %>/scaffold/' ${SCAFFOLD_TEMPLATE_DIR}/scaffold.js > ${APP_DIR}/scaffold.js
 
 git init ${HARDLINKS_DIR}
