@@ -18,8 +18,6 @@ rules:
     - allow:
         - warn
         - error
-  # デバッガ有効 # TODO: エディタではautofixせず、コミットはNGにしたいが可能だろうか？
-  no-debugger: off
   # 全角スペースはエラー（テンプレート文字列では認める）
   no-irregular-whitespace:
     - error
