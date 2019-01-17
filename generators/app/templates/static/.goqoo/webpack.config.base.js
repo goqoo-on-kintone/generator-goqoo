@@ -125,7 +125,7 @@ if (process.env.S3) {
       s3UploadOptions: {
         Bucket: process.env.AWS_S3_BUCKET,
       },
-      basePath: projectName,
+      basePath: process.env.AWS_S3_BASEPATH || projectName,
     })
   )
 }
