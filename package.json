@@ -1,14 +1,21 @@
 {
   "name": "generator-goqoo",
-  "version": "0.1.0",
+  "version": "0.1.0-a",
   "description": "",
-  "homepage": "",
+  "homepage": "https://github.com/goqoo-on-kintone/generator-goqoo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/goqoo-on-kintone/generator-goqoo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/goqoo-on-kintone/generator-goqoo/issues"
+  },
   "files": [
     "generators"
   ],
   "main": "generators/index.js",
   "keywords": [
-    "",
+    "kintone",
     "yeoman-generator"
   ],
   "devDependencies": {
@@ -63,6 +70,5 @@
       "prettier"
     ]
   },
-  "repository": "TheRed/generator-goqoo",
   "license": "MIT"
 }
