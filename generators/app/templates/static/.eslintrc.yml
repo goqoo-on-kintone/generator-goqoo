@@ -3,14 +3,13 @@ env:
 extends:
   - standard
   - plugin:import/errors
-  - vue
   - plugin:vue/base
   - prettier
   - prettier/standard
 globals:
   kintone: true
 parserOptions:
-  ecmaVersion: 2018
+  ecmaVersion: 2019
 rules:
   # console.log を残さない console.warn/error はOK
   no-console:
