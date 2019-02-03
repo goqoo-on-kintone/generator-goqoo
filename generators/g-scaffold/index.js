@@ -1,7 +1,6 @@
 'use strict'
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
-const secret = require('./secret/secret')
 const prompts = require('./prompts')
 
 module.exports = class extends FileCopyGenerator {
@@ -18,7 +17,6 @@ module.exports = class extends FileCopyGenerator {
   kintone() {
     const appId = this.appId
     const appName = this.appName
-    const port = secret.WEBPACK_PORT
 
     const api = new Kintone(this.kintoneAccount.domain, {
       authorization: {
@@ -78,6 +76,7 @@ module.exports = class extends FileCopyGenerator {
         this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
 
         // JSのURLをデプロイ
+        const port = process.env.PORT || 59000
         api.preview.app.customize.put(
           {
             app: appId,
