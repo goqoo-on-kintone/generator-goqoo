@@ -112,15 +112,21 @@ module.exports = class extends FileCopyGenerator {
 
     // Create JS source code
     const appName = this.appName
-    ;['', '-index', '-detail', '-submit'].forEach(eventHandler =>
+    ;[
+      'index.js',
+      'on-index-show.js',
+      'on-detail-show.js',
+      'on-edits-show.js',
+      'on-edits-submit.js',
+      'customize.js',
+      'customize.html',
+      'customize.scss',
+    ].forEach(fileName =>
       this.fs.copyTpl(
-        this.templatePath(`scaffold${eventHandler}.js`),
-        this.destinationPath(`apps/${appName}/${appName}${eventHandler}.js`),
+        this.templatePath(`scaffold${fileName}.js`),
+        this.destinationPath(`apps/${appName}/${fileName}.js`),
         { appName }
       )
     )
-    this.fs.copy(this.templatePath(`customize.js`), this.destinationPath(`apps/${appName}/customize.js`))
-    this.fs.copy(this.templatePath(`customize.html`), this.destinationPath(`apps/${appName}/customize.html`))
-    this.fs.copy(this.templatePath(`customize.scss`), this.destinationPath(`apps/${appName}/customize.scss`))
   }
 }
