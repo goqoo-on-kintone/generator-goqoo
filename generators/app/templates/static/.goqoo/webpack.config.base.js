@@ -2,7 +2,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const rcfile = require('rc-config-loader')
-require('dotenv').config({ path: path.resolve('config', '.env') })
+require('dotenv').config()
 const DropboxKintone = require('./dropbox')
 const S3Plugin = require('webpack-s3-plugin')
 
@@ -10,7 +10,7 @@ const { npm_package_name: projectName } = process.env
 const { apps, useDropbox } = rcfile('goqoo', { configFileName: path.resolve('config', 'goqoo.config') }).config
 
 const entry = apps.reduce((obj, appName) => {
-  obj[appName] = ['babel-polyfill', path.resolve('apps', appName, appName)]
+  obj[appName] = ['babel-polyfill', path.resolve('apps', appName)]
   return obj
 }, {})
 
