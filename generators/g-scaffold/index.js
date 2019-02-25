@@ -123,8 +123,8 @@ module.exports = class extends FileCopyGenerator {
       'customize.scss',
     ].forEach(fileName =>
       this.fs.copyTpl(
-        this.templatePath(`scaffold${fileName}.js`),
-        this.destinationPath(`apps/${appName}/${fileName}.js`),
+        this.templatePath(fileName),
+        this.destinationPath(`apps/${appName}/${fileName}`),
         { appName }
       )
     )
