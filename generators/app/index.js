@@ -6,12 +6,17 @@ const prompts = require('./prompts')
 
 module.exports = class extends Generator {
   prompting() {
-    if (prompts[0].default) {
-      this.props = {projectName: prompts[0].default}
+    const projectName = prompts[0].default
+    // Have Yeoman greet the user.
+    this.log(
+      yosay(
+        `Welcome to the outstanding ${chalk.red('generator-goqoo')} generator!
+        ${projectName ? `Now creating '${projectName}'...` : ''}`
+      )
+    )
+    if (projectName) {
+      this.props = { projectName }
     } else {
-      // Have Yeoman greet the user.
-      this.log(yosay(`Welcome to the outstanding ${chalk.red('generator-goqoo')} generator!`))
-
       return this.prompt(prompts).then(props => {
         // To access props later use this.props.someAnswer;
         this.props = props
