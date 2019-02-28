@@ -4,8 +4,14 @@ const Kintone = require('kintone')
 const prompts = require('./prompts')
 
 module.exports = class extends FileCopyGenerator {
-  configuring() {
-    super.configuring()
+  initializing() {
+    if (this.args[0]) {
+      ;[this.appName, this.appId] = this.args[0].split(':')
+    }
+    if (!this.appName || !this.appId) {
+      this.log(`${this.appName ? 'App id is' : 'Both App name and id are'} required!`)
+      process.exit(1)
+    }
   }
 
   prompting() {
