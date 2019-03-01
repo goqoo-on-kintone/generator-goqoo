@@ -2,10 +2,9 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 
 module.exports = class extends FileCopyGenerator {
-  configuring() {
-    super.configuring()
+  initializing() {
+    super.initializing()
   }
-
   writing() {
     super.writing()
 

@@ -4,8 +4,12 @@ const fs = require('fs')
 const yaml = require('js-yaml')
 
 module.exports = class extends Generator {
-  configuring() {
-    ;[this.appName, this.appId] = this.args[0].split(':')
+  initializing() {
+    this.appName = this.args[0]
+    if (!this.appName) {
+      this.log('App name is required!')
+      process.exit(1)
+    }
   }
 
   writing() {
