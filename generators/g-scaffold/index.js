@@ -2,7 +2,7 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
 const prompts = require('./prompts')
-const { kintonizeCallback } = require('../common/utils')
+const { promisifyKintoneApiCaller: promisify } = require('../common/utils')
 
 module.exports = class extends FileCopyGenerator {
   initializing() {
@@ -31,17 +31,16 @@ module.exports = class extends FileCopyGenerator {
         password: this.kintoneAccount.password,
       },
     })
+    // yeoman に非同期実行開始を通知
+    // 非同期実行がすべて終わった時点で done() を呼び出す
+    // done() が呼び出されないかぎり次のタスクは実行されない
     const done = this.async()
 
     // アプリのフィールド一覧を取得
-    api.form.get(
-      { app: appId },
-      kintonizeCallback((err, response) => {
-        if (err) {
-          this.env.error(err)
-        }
+    promisify(api.form.get)({ app: appId })
+      .then(response => {
         const { properties } = response
-        this.fieldMap = properties.reduce((obj, prop, index) => {
+        this.fieldMap = properties.reduce((obj, prop) => {
           // 特定のタイプのフィールドを全てカスタマイズビューに表示
           if (
             Object.keys(obj).length < 10 &&
@@ -60,71 +59,51 @@ module.exports = class extends FileCopyGenerator {
           }
           return obj
         }, {})
-        // カスタマイズビュー用の一覧をトップに追加
-        api.preview.app.views.get(
-          { app: appId },
-          kintonizeCallback((err, response) => {
-            if (err) {
-              this.env.error(err)
-            }
-            const { views } = response
-            views.カスタマイズビュー = {
-              type: 'CUSTOM',
-              name: 'カスタマイズビュー',
-              filterCond: '',
-              sort: 'レコード番号 desc',
-              index: -1,
-              html: '<div id="customize-view"></div>',
-              pager: true,
-            }
-            api.preview.app.views.put(
-              { app: appId, views },
-              kintonizeCallback((err, response) => {
-                if (err) {
-                  this.env.error(err)
-                }
-
-                this.log.ok('Put views to kintone')
-                this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
-
-                // JSのURLをデプロイ
-                const port = process.env.PORT || 59000
-                api.preview.app.customize.put(
-                  {
-                    app: appId,
-                    desktop: {
-                      js: [
-                        {
-                          type: 'URL',
-                          url: `https://localhost:${port}/${appName}.js`,
-                        },
-                      ],
-                    },
-                  },
-                  kintonizeCallback((err, response) => {
-                    if (err) {
-                      this.env.error(err)
-                    }
-                    this.log.ok('Put JavaScript URL to kintone')
-
-                    api.preview.app.deploy.post(
-                      { apps: [{ app: appId }] },
-                      kintonizeCallback((err, response) => {
-                        if (err) {
-                          this.env.error(err)
-                        }
-                        this.log.ok('Deploy to kintone')
-                        done()
-                      })
-                    )
-                  })
-                )
-              })
-            )
-          })
-        )
+        return promisify(api.preview.app.views.get)({ app: appId })
       })
-    )
+      .then(response => {
+        const { views } = response
+        views.カスタマイズビュー = {
+          type: 'CUSTOM',
+          name: 'カスタマイズビュー',
+          filterCond: '',
+          sort: 'レコード番号 desc',
+          index: -1,
+          html: '<div id="customize-view"></div>',
+          pager: true,
+        }
+        return promisify(api.preview.app.views.put)({ app: appId, views })
+      })
+      .then(() => {
+        this.log.ok('Put views to kintone')
+        this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
+
+        // JSのURLをデプロイ
+        const port = process.env.PORT || 59000
+        return promisify(api.preview.app.customize.put)({
+          app: appId,
+          desktop: {
+            js: [
+              {
+                type: 'URL',
+                url: `https://localhost:${port}/${appName}.js`,
+              },
+            ],
+          },
+        })
+      })
+      .then(() => {
+        this.log.ok('Put JavaScript URL to kintone')
+        return promisify(api.preview.app.deploy.post)({ apps: [{ app: appId }] })
+      })
+      .then(() => {
+        this.log.ok('Deploy to kintone')
+        // yeoman に非同期実行完了を通知
+        done()
+      })
+      .catch(error => {
+        this.env.error(error)
+      })
   }
 
   writing() {

@@ -26,22 +26,31 @@ const getAppName = appName => {
 }
 
 /**
- * kintone API へのリクエストに渡すコールバックをラップして、
- * 通信が正常でも kintone の論理エラーだったケースをエラーとして扱うコールバック関数を返す
- * @callback callback
- * @return {function} コールバック関数
+ * kintone API へのリクエストメソッドをラップして以下の挙動を追加する
+ * - Promise を返す
+ * - 通信が正常でも kintone の論理エラーだったケースを reject する
+ * @function apiCaller
+ * @return {function} ラップした関数
  */
-const kintonizeCallback = callback => {
-  return (err, response) => {
-    let error = err
-    if (response.message && response.id && response.code) {
-      error = response.message
-    }
-    callback(error, response)
+const promisifyKintoneApiCaller = apiCaller => {
+  return data => {
+    return new Promise((resolve, reject) => {
+      apiCaller(data, (err, response) => {
+        let error = err
+        if (!error && (response.message && response.id && response.code)) {
+          error = response.message
+        }
+        if (error) {
+          reject(error)
+        } else {
+          resolve(response)
+        }
+      })
+    })
   }
 }
 
 module.exports = {
   getAppName,
-  kintonizeCallback,
+  promisifyKintoneApiCaller,
 }
