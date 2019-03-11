@@ -2,6 +2,7 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
 const prompts = require('./prompts')
+const { kintonizeCallback } = require('../common/utils')
 
 module.exports = class extends FileCopyGenerator {
   initializing() {
@@ -33,85 +34,97 @@ module.exports = class extends FileCopyGenerator {
     const done = this.async()
 
     // アプリのフィールド一覧を取得
-    api.form.get({ app: appId }, (err, response) => {
-      if (err) {
-        this.log.error(err)
-      }
-      const { properties } = response
-      this.fieldMap = properties.reduce((obj, prop, index) => {
-        // 特定のタイプのフィールドを全てカスタマイズビューに表示
-        if (
-          Object.keys(obj).length < 10 &&
-          [
-            'SINGLE_LINE_TEXT',
-            'NUMBER',
-            'MULTI_LINE_TEXT',
-            'RADIO_BUTTON',
-            'DROP_DOWN',
-            'DATE',
-            'TIME',
-            'DATETIME',
-          ].includes(prop.type)
-        ) {
-          obj[prop.code] = prop
-        }
-        return obj
-      }, {})
-      // カスタマイズビュー用の一覧をトップに追加
-      api.preview.app.views.get({ app: appId }, (err, response) => {
+    api.form.get(
+      { app: appId },
+      kintonizeCallback((err, response) => {
         if (err) {
-          this.log.error(err)
+          this.env.error(err)
         }
-        const { views } = response
-        views.カスタマイズビュー = {
-          type: 'CUSTOM',
-          name: 'カスタマイズビュー',
-          filterCond: '',
-          sort: 'レコード番号 desc',
-          index: -1,
-          html: '<div id="customize-view"></div>',
-          pager: true,
-        }
-        api.preview.app.views.put({ app: appId, views }, (err, response) => {
-          if (err) {
-            this.log.error(err)
+        const { properties } = response
+        this.fieldMap = properties.reduce((obj, prop, index) => {
+          // 特定のタイプのフィールドを全てカスタマイズビューに表示
+          if (
+            Object.keys(obj).length < 10 &&
+            [
+              'SINGLE_LINE_TEXT',
+              'NUMBER',
+              'MULTI_LINE_TEXT',
+              'RADIO_BUTTON',
+              'DROP_DOWN',
+              'DATE',
+              'TIME',
+              'DATETIME',
+            ].includes(prop.type)
+          ) {
+            obj[prop.code] = prop
           }
-
-          this.log.ok('Put views to kintone')
-          this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
-
-          // JSのURLをデプロイ
-          const port = process.env.PORT || 59000
-          api.preview.app.customize.put(
-            {
-              app: appId,
-              desktop: {
-                js: [
-                  {
-                    type: 'URL',
-                    url: `https://localhost:${port}/${appName}.js`,
-                  },
-                ],
-              },
-            },
-            (err, response) => {
-              if (err) {
-                this.log.error(err)
-              }
-              this.log.ok('Put JavaScript URL to kintone')
-
-              api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
-                if (err) {
-                  this.log.error(err)
-                }
-                this.log.ok('Deploy to kintone')
-                done()
-              })
+          return obj
+        }, {})
+        // カスタマイズビュー用の一覧をトップに追加
+        api.preview.app.views.get(
+          { app: appId },
+          kintonizeCallback((err, response) => {
+            if (err) {
+              this.env.error(err)
             }
-          )
-        })
+            const { views } = response
+            views.カスタマイズビュー = {
+              type: 'CUSTOM',
+              name: 'カスタマイズビュー',
+              filterCond: '',
+              sort: 'レコード番号 desc',
+              index: -1,
+              html: '<div id="customize-view"></div>',
+              pager: true,
+            }
+            api.preview.app.views.put(
+              { app: appId, views },
+              kintonizeCallback((err, response) => {
+                if (err) {
+                  this.env.error(err)
+                }
+
+                this.log.ok('Put views to kintone')
+                this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
+
+                // JSのURLをデプロイ
+                const port = process.env.PORT || 59000
+                api.preview.app.customize.put(
+                  {
+                    app: appId,
+                    desktop: {
+                      js: [
+                        {
+                          type: 'URL',
+                          url: `https://localhost:${port}/${appName}.js`,
+                        },
+                      ],
+                    },
+                  },
+                  kintonizeCallback((err, response) => {
+                    if (err) {
+                      this.env.error(err)
+                    }
+                    this.log.ok('Put JavaScript URL to kintone')
+
+                    api.preview.app.deploy.post(
+                      { apps: [{ app: appId }] },
+                      kintonizeCallback((err, response) => {
+                        if (err) {
+                          this.env.error(err)
+                        }
+                        this.log.ok('Deploy to kintone')
+                        done()
+                      })
+                    )
+                  })
+                )
+              })
+            )
+          })
+        )
       })
-    })
+    )
   }
 
   writing() {
