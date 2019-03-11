@@ -56,59 +56,58 @@ module.exports = class extends FileCopyGenerator {
         }
         return obj
       }, {})
-    })
-
-    // カスタマイズビュー用の一覧をトップに追加
-    api.preview.app.views.get({ app: appId }, (err, response) => {
-      if (err) {
-        this.log.error(err)
-      }
-      const { views } = response
-      views.カスタマイズビュー = {
-        type: 'CUSTOM',
-        name: 'カスタマイズビュー',
-        filterCond: '',
-        sort: 'レコード番号 desc',
-        index: -1,
-        html: '<div id="customize-view"></div>',
-        pager: true,
-      }
-      api.preview.app.views.put({ app: appId, views }, (err, response) => {
+      // カスタマイズビュー用の一覧をトップに追加
+      api.preview.app.views.get({ app: appId }, (err, response) => {
         if (err) {
           this.log.error(err)
         }
+        const { views } = response
+        views.カスタマイズビュー = {
+          type: 'CUSTOM',
+          name: 'カスタマイズビュー',
+          filterCond: '',
+          sort: 'レコード番号 desc',
+          index: -1,
+          html: '<div id="customize-view"></div>',
+          pager: true,
+        }
+        api.preview.app.views.put({ app: appId, views }, (err, response) => {
+          if (err) {
+            this.log.error(err)
+          }
 
-        this.log.ok('Put views to kintone')
-        this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
+          this.log.ok('Put views to kintone')
+          this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
 
-        // JSのURLをデプロイ
-        const port = process.env.PORT || 59000
-        api.preview.app.customize.put(
-          {
-            app: appId,
-            desktop: {
-              js: [
-                {
-                  type: 'URL',
-                  url: `https://localhost:${port}/${appName}.js`,
-                },
-              ],
+          // JSのURLをデプロイ
+          const port = process.env.PORT || 59000
+          api.preview.app.customize.put(
+            {
+              app: appId,
+              desktop: {
+                js: [
+                  {
+                    type: 'URL',
+                    url: `https://localhost:${port}/${appName}.js`,
+                  },
+                ],
+              },
             },
-          },
-          (err, response) => {
-            if (err) {
-              this.log.error(err)
-            }
-            this.log.ok('Put JavaScript URL to kintone')
-
-            api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
+            (err, response) => {
               if (err) {
                 this.log.error(err)
               }
-              this.log.ok('Deploy to kintone')
-            })
-          }
-        )
+              this.log.ok('Put JavaScript URL to kintone')
+
+              api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
+                if (err) {
+                  this.log.error(err)
+                }
+                this.log.ok('Deploy to kintone')
+              })
+            }
+          )
+        })
       })
     })
   }
@@ -128,11 +127,7 @@ module.exports = class extends FileCopyGenerator {
       'customize.html',
       'customize.scss',
     ].forEach(fileName =>
-      this.fs.copyTpl(
-        this.templatePath(fileName),
-        this.destinationPath(`apps/${appName}/${fileName}`),
-        { appName }
-      )
+      this.fs.copyTpl(this.templatePath(fileName), this.destinationPath(`apps/${appName}/${fileName}`), { appName })
     )
   }
 }
