@@ -30,6 +30,7 @@ module.exports = class extends FileCopyGenerator {
         password: this.kintoneAccount.password,
       },
     })
+    const done = this.async()
 
     // アプリのフィールド一覧を取得
     api.form.get({ app: appId }, (err, response) => {
@@ -104,6 +105,7 @@ module.exports = class extends FileCopyGenerator {
                   this.log.error(err)
                 }
                 this.log.ok('Deploy to kintone')
+                done()
               })
             }
           )
