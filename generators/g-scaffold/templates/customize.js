@@ -3,6 +3,7 @@ import swal from 'sweetalert2'
 import HTML_TEMPLATE from './customize.html'
 import style from './customize.scss'
 import fieldMap from './fieldMap.json'
+import img from '../../.goqoo/img/SmallLogo.jpg'
 
 export default event => {
   if (event.viewName !== 'カスタマイズビュー') {
@@ -11,6 +12,13 @@ export default event => {
 
   // カスタマイズビューの場合のみスタイルシートを適用
   style.use()
+
+  swal({
+    text: 'Hello,  Goqoo on kintone!',
+    confirmButtonText: 'OK',
+    imageUrl: img,
+    imageHeight: '200',
+  })
 
   // kintoneに設定済みのタグを自作のHTMLファイルで置換
   const divNode = document.querySelector('#customize-view')
