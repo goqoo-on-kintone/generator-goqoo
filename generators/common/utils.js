@@ -27,30 +27,28 @@ const getAppName = appName => {
 
 /**
  * kintone API へのリクエストメソッドをラップして以下の挙動を追加する
- * - Promise を返す
  * - 通信が正常でも kintone の論理エラーだったケースを reject する
  * @function apiCaller
  * @return {function} ラップした関数
  */
-const promisifyKintoneApiCaller = apiCaller => {
+const kintoneApiCaller = apiCaller => {
   return data => {
-    return new Promise((resolve, reject) => {
-      apiCaller(data, (err, response) => {
-        let error = err
-        if (!error && (response.message && response.id && response.code)) {
-          error = response.message
-        }
-        if (error) {
-          reject(error)
+    return apiCaller(data).then(
+      response => {
+        if (response.message && response.id && response.code) {
+          throw new Error(`Message: ${response.message} ${JSON.stringify(data)}`)
         } else {
-          resolve(response)
+          return response
         }
-      })
-    })
+      },
+      error => {
+        throw new Error(error)
+      }
+    )
   }
 }
 
 module.exports = {
   getAppName,
-  promisifyKintoneApiCaller,
+  kintoneApiCaller,
 }

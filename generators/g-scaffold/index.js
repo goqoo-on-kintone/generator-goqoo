@@ -2,7 +2,7 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
 const prompts = require('./prompts')
-const { promisifyKintoneApiCaller: promisify } = require('../common/utils')
+const { kintoneApiCaller: apiCaller } = require('../common/utils')
 
 module.exports = class extends FileCopyGenerator {
   initializing() {
@@ -37,7 +37,7 @@ module.exports = class extends FileCopyGenerator {
     const done = this.async()
 
     // アプリのフィールド一覧を取得
-    promisify(api.form.get)({ app: appId })
+    apiCaller(api.form.get)({ app: appId })
       .then(response => {
         const { properties } = response
         this.fieldMap = properties.reduce((obj, prop) => {
@@ -59,7 +59,7 @@ module.exports = class extends FileCopyGenerator {
           }
           return obj
         }, {})
-        return promisify(api.preview.app.views.get)({ app: appId })
+        return apiCaller(api.preview.app.views.get)({ app: appId })
       })
       .then(response => {
         const { views } = response
@@ -72,7 +72,7 @@ module.exports = class extends FileCopyGenerator {
           html: '<div id="customize-view"></div>',
           pager: true,
         }
-        return promisify(api.preview.app.views.put)({ app: appId, views })
+        return apiCaller(api.preview.app.views.put)({ app: appId, views })
       })
       .then(() => {
         this.log.ok('Put views to kintone')
@@ -80,7 +80,7 @@ module.exports = class extends FileCopyGenerator {
 
         // JSのURLをデプロイ
         const port = process.env.PORT || 59000
-        return promisify(api.preview.app.customize.put)({
+        return apiCaller(api.preview.app.customize.put)({
           app: appId,
           desktop: {
             js: [
@@ -94,7 +94,7 @@ module.exports = class extends FileCopyGenerator {
       })
       .then(() => {
         this.log.ok('Put JavaScript URL to kintone')
-        return promisify(api.preview.app.deploy.post)({ apps: [{ app: appId }] })
+        return apiCaller(api.preview.app.deploy.post)({ apps: [{ app: appId }] })
       })
       .then(() => {
         this.log.ok('Deploy to kintone')
