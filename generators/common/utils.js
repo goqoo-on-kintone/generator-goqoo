@@ -27,24 +27,23 @@ const getAppName = appName => {
 
 /**
  * kintone API へのリクエストメソッドをラップして以下の挙動を追加する
- * - 通信が正常でも kintone の論理エラーだったケースを reject する
+ * - 通信が正常でも kintone の論理エラーだったケースは reject する
  * @function apiCaller
  * @return {function} ラップした関数
  */
-const kintoneApiCaller = apiCaller => {
+const kintoneApiCaller = api => {
   return data => {
-    return apiCaller(data).then(
-      response => {
+    return api(data)
+      .then(response => {
         if (response.message && response.id && response.code) {
-          throw new Error(`Message: ${response.message} ${JSON.stringify(data)}`)
+          throw new Error(`Message: ${response.message}`)
         } else {
           return response
         }
-      },
-      error => {
+      })
+      .catch(error => {
         throw new Error(error)
-      }
-    )
+      })
   }
 }
 

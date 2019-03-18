@@ -2,7 +2,7 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
 const prompts = require('./prompts')
-const { kintoneApiCaller: apiCaller } = require('../common/utils')
+const { kintoneApiCaller: caller } = require('../common/utils')
 
 module.exports = class extends FileCopyGenerator {
   initializing() {
@@ -21,7 +21,7 @@ module.exports = class extends FileCopyGenerator {
     })
   }
 
-  kintone() {
+  async kintone() {
     const appId = this.appId
     const appName = this.appName
 
@@ -37,73 +37,65 @@ module.exports = class extends FileCopyGenerator {
     const done = this.async()
 
     // アプリのフィールド一覧を取得
-    apiCaller(api.form.get)({ app: appId })
-      .then(response => {
-        const { properties } = response
-        this.fieldMap = properties.reduce((obj, prop) => {
-          // 特定のタイプのフィールドを全てカスタマイズビューに表示
-          if (
-            Object.keys(obj).length < 10 &&
-            [
-              'SINGLE_LINE_TEXT',
-              'NUMBER',
-              'MULTI_LINE_TEXT',
-              'RADIO_BUTTON',
-              'DROP_DOWN',
-              'DATE',
-              'TIME',
-              'DATETIME',
-            ].includes(prop.type)
-          ) {
-            obj[prop.code] = prop
-          }
-          return obj
-        }, {})
-        return apiCaller(api.preview.app.views.get)({ app: appId })
-      })
-      .then(response => {
-        const { views } = response
-        views.カスタマイズビュー = {
-          type: 'CUSTOM',
-          name: 'カスタマイズビュー',
-          filterCond: '',
-          sort: 'レコード番号 desc',
-          index: -1,
-          html: '<div id="customize-view"></div>',
-          pager: true,
+    try {
+      const { properties } = await caller(api.form.get)({ app: appId })
+      this.fieldMap = properties.reduce((obj, prop) => {
+        // 特定のタイプのフィールドを全てカスタマイズビューに表示
+        if (
+          Object.keys(obj).length < 10 &&
+          [
+            'SINGLE_LINE_TEXT',
+            'NUMBER',
+            'MULTI_LINE_TEXT',
+            'RADIO_BUTTON',
+            'DROP_DOWN',
+            'DATE',
+            'TIME',
+            'DATETIME',
+          ].includes(prop.type)
+        ) {
+          obj[prop.code] = prop
         }
-        return apiCaller(api.preview.app.views.put)({ app: appId, views })
-      })
-      .then(() => {
-        this.log.ok('Put views to kintone')
-        this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
+        return obj
+      }, {})
 
-        // JSのURLをデプロイ
-        const port = process.env.PORT || 59000
-        return apiCaller(api.preview.app.customize.put)({
-          app: appId,
-          desktop: {
-            js: [
-              {
-                type: 'URL',
-                url: `https://localhost:${port}/${appName}.js`,
-              },
-            ],
-          },
-        })
+      const { views } = await caller(api.preview.app.views.get)({ app: appId })
+      views.カスタマイズビュー = {
+        type: 'CUSTOM',
+        name: 'カスタマイズビュー',
+        filterCond: '',
+        sort: 'レコード番号 desc',
+        index: -1,
+        html: '<div id="customize-view"></div>',
+        pager: true,
+      }
+
+      await caller(api.preview.app.views.put)({ app: appId, views })
+      this.log.ok('Put views to kintone')
+      this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
+
+      // JSのURLをデプロイ
+      const port = process.env.PORT || 59000
+      await caller(api.preview.app.customize.put)({
+        app: appId,
+        desktop: {
+          js: [
+            {
+              type: 'URL',
+              url: `https://localhost:${port}/${appName}.js`,
+            },
+          ],
+        },
       })
-      .then(() => {
-        this.log.ok('Put JavaScript URL to kintone')
-        return apiCaller(api.preview.app.deploy.post)({ apps: [{ app: appId }] })
-      })
-      .then(() => {
-        this.log.ok('Deploy to kintone')
-        // yeoman に非同期実行完了を通知
-        done()
-      })
-      .catch(error => {
-        this.env.error(error)
-      })
+      this.log.ok('Put JavaScript URL to kintone')
+
+      await caller(api.preview.app.deploy.post)({ apps: [{ app: appId }] })
+      this.log.ok('Deploy to kintone')
+      // yeoman に非同期実行完了を通知
+      done()
+    } catch (error) {
+      this.env.error(error)
+    }
   }
 
   writing() {
