@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import swal from 'sweetalert2'
 import HTML_TEMPLATE from './customize.html'
-import style from './customize.scss'
+import './customize.scss'
 import fieldMap from './fieldMap.json'
 import img from '../../.goqoo/img/SmallLogo.jpg'
 
@@ -9,9 +9,6 @@ export default event => {
   if (event.viewName !== 'カスタマイズビュー') {
     return
   }
-
-  // カスタマイズビューの場合のみスタイルシートを適用
-  style.use()
 
   swal({
     text: 'Hello,  Goqoo on kintone!',

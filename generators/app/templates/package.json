@@ -24,6 +24,7 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
+    "autoprefixer": "^9.5.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "cross-env": "^5.2.0",
@@ -45,6 +46,7 @@
     "html-loader": "^0.5.1",
     "isomorphic-fetch": "^2.2.1",
     "node-sass": "^4.7.2",
+    "postcss-loader": "^3.0.0",
     "prettier": "^1.16.3",
     "rc-config-loader": "^2.0.1",
     "sass-loader": "^7.0.1",
@@ -57,7 +59,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "foundation-sites": "^6.5.0-rc.4",
+    "bootstrap": "^4.3.1",
     "kintone-utility": "https://github.com/kintone/kintoneUtility.git",
     "sweetalert2": "^7.28.7",
     "vue": "^2.5.9"

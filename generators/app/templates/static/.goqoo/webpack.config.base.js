@@ -75,7 +75,20 @@ const config = {
       },
       {
         test: /\.scss$/,
-        loader: ['style-loader/useable', 'css-loader', 'sass-loader'],
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          {
+            // Loader for webpack to process CSS with PostCSS
+            loader: 'postcss-loader',
+            options: {
+              plugins: function() {
+                return [require('autoprefixer')]
+              },
+            },
+          },
+          { loader: 'sass-loader' },
+        ],
       },
       {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
