@@ -71,7 +71,7 @@ const config = {
       },
       {
         test: /\.css$/,
-        loader: ['style-loader/useable', 'css-loader'],
+        loader: ['style-loader', 'css-loader'],
       },
       {
         test: /\.scss$/,
