@@ -10,6 +10,6 @@ module.exports = class extends FileCopyGenerator {
 
     // Create JS source code
     const appName = this.appName
-    this.fs.copyTpl(this.templatePath(`model.js`), this.destinationPath(`apps/${appName}/index.js`), { appName })
+    this.fs.copyTpl(this.templatePath(`app.js`), this.destinationPath(`apps/${appName}/index.js`), { appName })
   }
 }
