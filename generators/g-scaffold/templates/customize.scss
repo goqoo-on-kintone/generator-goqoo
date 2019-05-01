@@ -25,31 +25,16 @@ $theme-colors: (
   @import '~bootstrap/scss/buttons';
 
   // レコード一覧
-  table {
+  .table-goqoo {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
   }
 
-  table thead th,
-  table thead td,
-  table tbody th,
-  table tbody td,
-  table tfoot th,
-  table tfoot td {
-    padding: 0.15rem 0.2rem 0.2rem;
-    border: 1px solid #f1f1f1;
-    font-size: 0.875rem;
-    white-space: nowrap;
-  }
-
-  table input[type] {
+  .table-goqoo input {
     height: 1.625rem; // 26px相当
     margin: 0;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
     font-size: 0.875rem;
     border-radius: 0%;
-    border: 1px solid #f1f1f1;
   }
 
   .btn {
