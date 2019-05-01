@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import swal from 'sweetalert2'
+import swal from 'sweetalert'
 import HTML_TEMPLATE from './customize.html'
 import './customize.scss'
 import fieldMap from './fieldMap.json'
@@ -11,10 +11,8 @@ export default event => {
   }
 
   swal({
-    text: 'Hello,  Goqoo on kintone!',
-    confirmButtonText: 'OK',
-    imageUrl: img,
-    imageHeight: '200',
+    text: 'Hello, Goqoo on kintone!',
+    icon: img,
   })
 
   // kintoneに設定済みのタグを自作のHTMLファイルで置換

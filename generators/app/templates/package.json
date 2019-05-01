@@ -61,7 +61,7 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.3.1",
     "kintone-utility": "https://github.com/kintone/kintoneUtility.git",
-    "sweetalert2": "^7.28.7",
+    "sweetalert": "^2.1.2",
     "vue": "^2.5.9"
   }
 }
