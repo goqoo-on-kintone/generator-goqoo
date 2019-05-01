@@ -6,6 +6,8 @@ extends:
   - plugin:vue/base
   - prettier
   - prettier/standard
+plugins:
+  - prettier
 globals:
   kintone: true
 parserOptions:
@@ -29,3 +31,4 @@ rules:
   prefer-const: error
   # importだけでなくrequireの無効パスもエラー
   node/no-missing-require: error
+  prettier/prettier: error
