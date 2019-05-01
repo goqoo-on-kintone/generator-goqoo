@@ -2,6 +2,7 @@
 const FileCopyGenerator = require('../common/file-copy-generator')
 const Kintone = require('kintone')
 const prompts = require('./prompts')
+const { kintoneApiCaller: caller } = require('../common/utils')
 
 module.exports = class extends FileCopyGenerator {
   initializing() {
@@ -20,7 +21,7 @@ module.exports = class extends FileCopyGenerator {
     })
   }
 
-  kintone() {
+  async kintone() {
     const appId = this.appId
     const appName = this.appName
 
@@ -30,14 +31,15 @@ module.exports = class extends FileCopyGenerator {
         password: this.kintoneAccount.password,
       },
     })
+    // yeoman に非同期実行開始を通知
+    // 非同期実行がすべて終わった時点で done() を呼び出す
+    // done() が呼び出されないかぎり次のタスクは実行されない
+    const done = this.async()
 
     // アプリのフィールド一覧を取得
-    api.form.get({ app: appId }, (err, response) => {
-      if (err) {
-        this.log.error(err)
-      }
-      const { properties } = response
-      this.fieldMap = properties.reduce((obj, prop, index) => {
+    try {
+      const { properties } = await caller(api.form.get)({ app: appId })
+      this.fieldMap = properties.reduce((obj, prop) => {
         // 特定のタイプのフィールドを全てカスタマイズビューに表示
         if (
           Object.keys(obj).length < 10 &&
@@ -56,14 +58,8 @@ module.exports = class extends FileCopyGenerator {
         }
         return obj
       }, {})
-    })
 
-    // カスタマイズビュー用の一覧をトップに追加
-    api.preview.app.views.get({ app: appId }, (err, response) => {
-      if (err) {
-        this.log.error(err)
-      }
-      const { views } = response
+      const { views } = await caller(api.preview.app.views.get)({ app: appId })
       views.カスタマイズビュー = {
         type: 'CUSTOM',
         name: 'カスタマイズビュー',
@@ -73,44 +69,33 @@ module.exports = class extends FileCopyGenerator {
         html: '<div id="customize-view"></div>',
         pager: true,
       }
-      api.preview.app.views.put({ app: appId, views }, (err, response) => {
-        if (err) {
-          this.log.error(err)
-        }
 
-        this.log.ok('Put views to kintone')
-        this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
+      await caller(api.preview.app.views.put)({ app: appId, views })
+      this.log.ok('Put views to kintone')
+      this.fs.writeJSON(this.destinationPath(`apps/${appName}/fieldMap.json`), this.fieldMap)
 
-        // JSのURLをデプロイ
-        const port = process.env.PORT || 59000
-        api.preview.app.customize.put(
-          {
-            app: appId,
-            desktop: {
-              js: [
-                {
-                  type: 'URL',
-                  url: `https://localhost:${port}/${appName}.js`,
-                },
-              ],
+      // JSのURLをデプロイ
+      const port = process.env.PORT || 59000
+      await caller(api.preview.app.customize.put)({
+        app: appId,
+        desktop: {
+          js: [
+            {
+              type: 'URL',
+              url: `https://localhost:${port}/${appName}.js`,
             },
-          },
-          (err, response) => {
-            if (err) {
-              this.log.error(err)
-            }
-            this.log.ok('Put JavaScript URL to kintone')
-
-            api.preview.app.deploy.post({ apps: [{ app: appId }] }, (err, response) => {
-              if (err) {
-                this.log.error(err)
-              }
-              this.log.ok('Deploy to kintone')
-            })
-          }
-        )
+          ],
+        },
       })
-    })
+      this.log.ok('Put JavaScript URL to kintone')
+
+      await caller(api.preview.app.deploy.post)({ apps: [{ app: appId }] })
+      this.log.ok('Deploy to kintone')
+      // yeoman に非同期実行完了を通知
+      done()
+    } catch (error) {
+      this.env.error(error)
+    }
   }
 
   writing() {
@@ -128,11 +113,7 @@ module.exports = class extends FileCopyGenerator {
       'customize.html',
       'customize.scss',
     ].forEach(fileName =>
-      this.fs.copyTpl(
-        this.templatePath(fileName),
-        this.destinationPath(`apps/${appName}/${fileName}`),
-        { appName }
-      )
+      this.fs.copyTpl(this.templatePath(fileName), this.destinationPath(`apps/${appName}/${fileName}`), { appName })
     )
   }
 }
