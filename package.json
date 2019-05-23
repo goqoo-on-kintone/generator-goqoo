@@ -5,7 +5,7 @@
   "homepage": "https://github.com/goqoo-on-kintone/generator-goqoo#readme",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/goqoo-on-kintone/generator-goqoo.git"
+    "url": "https://github.com/goqoo-on-kintone/generator-goqoo"
   },
   "bugs": {
     "url": "https://github.com/goqoo-on-kintone/generator-goqoo/issues"
